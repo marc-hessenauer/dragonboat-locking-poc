@@ -24,10 +24,10 @@ func NewLockStateMachine() statemachine.IStateMachine {
 }
 
 // Apply a Raft proposal
-func (s *LockStateMachine) Update(data []byte) (uint64, error) {
+func (s *LockStateMachine) Update(entry statemachine.Entry) (statemachine.Result, error) {
 	var cmd LockCommand
-	if err := json.Unmarshal(data, &cmd); err != nil {
-		return 0, err
+	if err := json.Unmarshal(entry.Cmd, &cmd); err != nil {
+		return statemachine.Result{}, err
 	}
 
 	switch cmd.Action {
@@ -36,9 +36,9 @@ func (s *LockStateMachine) Update(data []byte) (uint64, error) {
 	case "unlock":
 		s.lockMap[cmd.Resource] = false
 	default:
-		return 0, fmt.Errorf("unknown action: %s", cmd.Action)
+		return statemachine.Result{}, fmt.Errorf("unknown action: %s", cmd.Action)
 	}
-	return 1, nil
+	return statemachine.Result{Value: 1}, nil
 }
 
 // Lookup (not replicated, local)

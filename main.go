@@ -6,12 +6,10 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/lni/dragonboat"
-	"github.com/lni/dragonboat/v4/config"
-
-	// local packages:
-	"dragonboat-locking-poc/config"
-	"dragonboat-locking-poc/locking"
+	"github.com/lni/dragonboat/v4"
+	"github.com/lni/dragonboat/v4/statemachine"
+	"github.com/marc-hessenauer/dragonboat-locking-poc/config"
+	"github.com/marc-hessenauer/dragonboat-locking-poc/locking"
 )
 
 func main() {
@@ -27,11 +25,12 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	defer nh.Stop()
+	defer nh.Close()
 
 	peers := map[uint64]string{1: address}
-
-	if err := nh.StartOnDiskStateMachine(clusterID, peers, false, locking.NewLockStateMachine, raftConfig); err != nil {
+	if err := nh.StartReplica(peers, false, func(clusterID uint64, nodeID uint64) statemachine.IStateMachine {
+		return locking.NewLockStateMachine()
+	}, raftConfig); err != nil {
 		panic(err)
 	}
 
@@ -46,7 +45,8 @@ func main() {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 
-	_, err = nh.SyncPropose(ctx, clusterID, data)
+	session := nh.GetNoOPSession(clusterID)
+	_, err = nh.SyncPropose(ctx, session, data)
 	if err != nil {
 		panic(err)
 	}

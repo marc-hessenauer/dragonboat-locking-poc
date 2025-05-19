@@ -10,16 +10,13 @@ func GetNodeHostConfig(nodeID uint64, address string) config.NodeHostConfig {
 		RaftAddress:    address,
 		RTTMillisecond: 200,
 		EnableMetrics:  false,
-		Expert: config.ExpertConfig{
-			DisableLogDB: true, // in-memory only
-		},
+		Expert: config.ExpertConfig{},
 	}
 }
 
 func GetRaftConfig(clusterID, nodeID uint64) config.Config {
 	return config.Config{
-		NodeID:             nodeID,
-		ClusterID:          clusterID,
+		ReplicaID:          nodeID,
 		ElectionRTT:        10,
 		HeartbeatRTT:       1,
 		CheckQuorum:        true,
