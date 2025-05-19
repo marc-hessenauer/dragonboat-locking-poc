@@ -1,7 +1,7 @@
 package config
 
 import (
-	"github.com/lni/dragonboat/v3/config"
+	"github.com/lni/dragonboat/v4/config"
 )
 
 func GetNodeHostConfig(nodeID uint64, address string) config.NodeHostConfig {
