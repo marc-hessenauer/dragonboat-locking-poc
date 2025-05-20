@@ -6,11 +6,12 @@ import (
 
 func GetNodeHostConfig(nodeID uint64, address string) config.NodeHostConfig {
 	return config.NodeHostConfig{
-		NodeHostDir:    "", // memory only
+		WALDir:         "",
+		NodeHostDir:    "./nodehost/",
 		RaftAddress:    address,
 		RTTMillisecond: 200,
 		EnableMetrics:  false,
-		Expert: config.ExpertConfig{},
+		Expert:         config.ExpertConfig{},
 	}
 }
 

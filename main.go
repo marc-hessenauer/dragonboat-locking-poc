@@ -6,10 +6,11 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/lni/dragonboat/v4"
-	"github.com/lni/dragonboat/v4/statemachine"
 	"github.com/marc-hessenauer/dragonboat-locking-poc/config"
 	"github.com/marc-hessenauer/dragonboat-locking-poc/locking"
+
+	"github.com/lni/dragonboat/v4"
+	"github.com/lni/dragonboat/v4/statemachine"
 )
 
 func main() {
